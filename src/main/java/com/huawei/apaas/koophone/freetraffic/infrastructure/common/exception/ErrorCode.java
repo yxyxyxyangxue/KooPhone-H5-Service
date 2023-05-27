@@ -39,6 +39,18 @@ public enum ErrorCode {
      */
     ORDER_RESULT_PENDING("kp.freetraffic.2001", "Order Result Pending"),
     /**
+     * 无法领取
+     */
+    ORDER_INVALID("kp.freetraffic.2002", "Can't get Order"),
+    /**
+     * 活动已下线或者已结束
+     */
+    ACTIVITY_ENDED("kp.freetraffic.2003", "Activity has ended"),
+    /**
+     * 重复下单
+     */
+    ORDER_IDEMPOTENT_INVALID("kp.freetraffic.2004", "Order Idempotent Invalid"),
+    /**
      * 未知异常
      */
     UNKNOWN_ERROR("kp.freetraffic.9999", "Unknown Error"),
