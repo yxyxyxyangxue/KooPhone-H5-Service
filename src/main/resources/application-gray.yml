@@ -21,9 +21,10 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       ddl-auto: none
 
-cmcc_url:
-  valid_token: https://token.cmpassport.com:8300/uniapi/uniTokenValidate
-  login: https://moss.cmpassport.com/api/login
-  send_sms_code: https://moss.cmpassport.com/api/sendSmsCode
-  add_order: https://dev.coc.10086.cn/staging-coc/gateway/api/common/activity/order/addOrder
-  query_order_result: https://dev.coc.10086.cn/staging-coc/gateway/api/common/activity/order/fullfillmentResultQueryV2
+cmcc:
+  url:
+    valid_token: https://token.cmpassport.com:8300/uniapi/uniTokenValidate
+    login: https://moss.cmpassport.com/api/login
+    send_sms_code: https://moss.cmpassport.com/api/sendSmsCode
+    add_order: https://dev.coc.10086.cn/staging-coc/gateway/api/common/activity/order/addOrder
+    query_order_result: https://dev.coc.10086.cn/staging-coc/gateway/api/common/activity/order/fullfillmentResultQueryV2

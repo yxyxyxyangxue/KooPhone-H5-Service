@@ -49,7 +49,7 @@ public enum ErrorCode {
     /**
      * 重复下单
      */
-    ORDER_IDEMPOTENT_INVALID("kp.freetraffic.2004", "Order Idempotent Invalid"),
+    ORDER_DUPLICATE_INVALID("kp.freetraffic.2004", "Order Duplicate Invalid"),
     /**
      * 未知异常
      */

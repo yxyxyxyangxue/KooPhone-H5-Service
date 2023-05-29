@@ -24,9 +24,9 @@ import org.springframework.web.client.RestTemplate;
 public class CMCCOrderMapper {
     private final RestTemplate restTemplate;
 
-    @Value("${cmcc_url.add_order}")
+    @Value("${cmcc.url.add_order}")
     private String addOrderUrl;
-    @Value("${cmcc_url.query_order_result}")
+    @Value("${cmcc.url.query_order_result}")
     private String queryOrderResultUrl;
 
     /**

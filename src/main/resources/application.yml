@@ -24,21 +24,20 @@ spring:
 swagger:
   enabled: true
 
-cmcc_url:
-  valid_token: http://120.197.235.102/api/uniTokenValidate/
-  login: http://120.197.235.102/yzapi/api/login
-  send_sms_code: http://120.197.235.102/yzapi/api/sendSmsCode
-  add_order: https://sandbox.open.10086.cn/38857911/gateway/api/common/activity/order/addOrder
-  query_order_result: https://sandbox.open.10086.cn/38857911/gateway/api/common/activity/order/fullfillmentResultQueryV2
-
 cmcc:
+  url:
+    valid_token: http://120.197.235.102/api/uniTokenValidate/
+    login: http://120.197.235.102/yzapi/api/login
+    send_sms_code: http://120.197.235.102/yzapi/api/sendSmsCode
+    add_order: https://sandbox.open.10086.cn/38857911/gateway/api/common/activity/order/addOrder
+    query_order_result: https://sandbox.open.10086.cn/38857911/gateway/api/common/activity/order/fullfillmentResultQueryV2
   auth:
-    sourceId: xxxxxx
-    sourceKey: xxxxxx
-    appId: xxxxxx
-    appKey: xxxxxx
+    sourceId: 001326
+    sourceKey: n3uelzFYwsvyZHcs
+    appId: 001326
+    appKey: n3uelzFYwsvyZHcs
     userip: 139.196.180.61
   order:
     activityId: 123456789
-    sourceApp: xxxxxx
+    sourceApp: cmicCloudPhone
     sourceGoodsId: xxxxxx

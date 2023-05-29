@@ -22,11 +22,11 @@ import org.springframework.web.client.RestTemplate;
 public class CMCCAuthMapper {
     private final RestTemplate restTemplate;
 
-    @Value("${cmcc_url.valid_token}")
+    @Value("${cmcc.url.valid_token}")
     private String validTokenUrl;
-    @Value("${cmcc_url.login}")
+    @Value("${cmcc.url.login}")
     private String loginUrl;
-    @Value("${cmcc_url.send_sms_code}")
+    @Value("${cmcc.url.send_sms_code}")
     private String sendSmsCodeUrl;
 
     /**

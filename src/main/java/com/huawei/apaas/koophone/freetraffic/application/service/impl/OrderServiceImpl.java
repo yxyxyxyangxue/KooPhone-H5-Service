@@ -20,6 +20,7 @@ import com.huawei.apaas.koophone.freetraffic.infrastructure.gatewayimpl.rpc.data
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -37,6 +38,9 @@ public class OrderServiceImpl implements IOrderService {
     private final OrderGateway orderGateway;
     private final FreeTrafficProperties freeTrafficProperties;
 
+    // TODO
+    // 当前按照code为0表示成功
+    // 170248001是bizCode的取值
     @Override
     public QueryOrderResponseDTO queryOrderResult(QueryOrderResultRequest queryOrderResultRequest) {
         // 1. 构建请求DO
@@ -45,15 +49,66 @@ public class OrderServiceImpl implements IOrderService {
         // 2. 请求
         QueryOrderResponseDO queryOrderResponseDO = orderGateway.queryOrderResult(queryOrderResultDO);
         // 3. 构建response
-        if (queryOrderResponseDO.getSuccess()
-                && Objects.equals(queryOrderResponseDO.getCode(), SystemConstant.ORDER_RESULT_COMPLETE)) {
-            // 3.1 将结果保存
-            log.info("queryOrderResult save OrderDO. {}", queryOrderResponseDO);
-            orderDomainService.saveOrder(QueryOrderWrapper.responseDO2OrderDO(queryOrderResponseDO));
-            return QueryOrderWrapper.do2Dto(queryOrderResponseDO);
+        if (queryOrderResponseDO.getSuccess()) {
+            if (queryOrderResponseDO.getData() != null
+                    && !CollectionUtils.isEmpty(queryOrderResponseDO.getData().getOrderList())) {
+                // 3.1 将结果保存
+                log.info("queryOrderResult save OrderDO. {}", queryOrderResponseDO);
+                orderDomainService.saveOrder(QueryOrderWrapper.responseDO2OrderDO(queryOrderResponseDO));
+
+                // 3.2 正确返回
+                if (Objects.equals(queryOrderResponseDO.getCode(), SystemConstant.ORDER_RESULT_COMPLETE)
+                        && Objects.equals(queryOrderResponseDO.getData().getOrderList()
+                            .get(0).getStatus(), SystemConstant.ORDER_STATUS_OK)) {
+                    return QueryOrderWrapper.do2Dto(queryOrderResponseDO);
+                }
+                // 3.3 结果未返回
+                if (SystemConstant.ADD_ORDER_RESULT_PENDING.containsKey(
+                        queryOrderResponseDO.getData().getOrderList().get(0).getStatus())) {
+                    throw new KooPhoneException(ErrorCode.ORDER_RESULT_PENDING);
+                }
+                // 3.4 错误处理
+                failureResultHandler(queryOrderResponseDO);
+                // 未知错误
+                throw new KooPhoneException(ErrorCode.UNKNOWN_ERROR);
+            } else {
+                log.info("Query Order Result Failure. {}. {}", queryOrderResultRequest, queryOrderResultRequest);
+                throw new KooPhoneException(ErrorCode.SYSTEM_EXCEPTION);
+            }
         } else {
-            log.info("Add Order Result Pending. {}. {}", queryOrderResultRequest, queryOrderResultRequest);
-            return new QueryOrderResponseDTO();
+            log.info("Query Order Result Failure. {}. {}", queryOrderResultRequest, queryOrderResultRequest);
+            throw new KooPhoneException(ErrorCode.SYSTEM_EXCEPTION);
+        }
+    }
+
+    /**
+     * 失败重试、无法领取、重复、已下线
+     * @param queryOrderResponseDO
+     */
+    public void failureResultHandler(QueryOrderResponseDO queryOrderResponseDO) {
+        String code = queryOrderResponseDO.getCode();
+        if (Objects.equals(code, SystemConstant.ORDER_RESULT_FAILURE)) {
+            Optional<String> orderRespDOOpt =
+                    Optional.of(queryOrderResponseDO)
+                            .map(QueryOrderResponseDO::getData)
+                            .map(QueryOrderResponseDO.RpcFullfillmentResultV2Resp::getOrderList)
+                            .map(e -> e.get(0))
+                            .map(QueryOrderResponseDO.OrderRespDO::getBizCode);
+            if (orderRespDOOpt.isPresent()) {
+                String bizCode = orderRespDOOpt.get();
+                if (SystemConstant.ADD_ORDER_RESULT_FAILURE.containsKey(bizCode)) {
+                    throw new KooPhoneException(ErrorCode.ADD_ORDER_FAILURE);
+                }
+                if (SystemConstant.ADD_ORDER_RESULT_UNABLE.containsKey(bizCode)) {
+                    throw new KooPhoneException(ErrorCode.ORDER_INVALID);
+                }
+                if (SystemConstant.ADD_ORDER_RESULT_DUPLICATE.containsKey(bizCode)) {
+                    throw new KooPhoneException(ErrorCode.ORDER_DUPLICATE_INVALID);
+                }
+                if (SystemConstant.ADD_ORDER_RESULT_ENDED.containsKey(bizCode)) {
+                    throw new KooPhoneException(ErrorCode.ACTIVITY_ENDED);
+                }
+            }
         }
     }
 
