@@ -66,7 +66,6 @@ public class AuthServiceImpl implements IAuthService {
         validateTokenDO.getHeader().setId(freeTrafficProperties.getSourceId());
         validateTokenDO.getHeader().setIdtype(SystemConstant.ID_TYPE);
         validateTokenDO.getHeader().setMsgid(UuidUtils.genUuid());
-        validateTokenDO.getHeader().setAppType(UuidUtils.genUuid());
         validateTokenDO.getHeader().setUserip(freeTrafficProperties.getUserIp());
         validateTokenDO.getHeader().setSystemtime(DateUtils.now());
         validateTokenDO.getHeader().setExpandparams(SystemConstant.VALID_TOKEN_EXPANDPARAMS);

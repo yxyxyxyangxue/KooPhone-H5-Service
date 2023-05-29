@@ -32,9 +32,9 @@ cmcc:
     add_order: https://sandbox.open.10086.cn/38857911/gateway/api/common/activity/order/addOrder
     query_order_result: https://sandbox.open.10086.cn/38857911/gateway/api/common/activity/order/fullfillmentResultQueryV2
   auth:
-    sourceId: 001326
+    sourceId: "001326"
     sourceKey: n3uelzFYwsvyZHcs
-    appId: 001326
+    appId: "001326"
     appKey: n3uelzFYwsvyZHcs
     userip: 139.196.180.61
   order:
