@@ -25,7 +25,7 @@ public class ValidateTokenWrapper {
         validateTokenDO.setBody(validateTokenBody);
 
         ValidateTokenDO.ValidateTokenHeader validateTokenHeader = new ValidateTokenDO.ValidateTokenHeader();
-        validateTokenHeader.setAppType(validateTokenRequest.getAppType());
+        validateTokenHeader.setApptype(validateTokenRequest.getAppType());
         validateTokenDO.setHeader(validateTokenHeader);
         return validateTokenDO;
     }

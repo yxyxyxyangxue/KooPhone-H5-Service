@@ -92,7 +92,7 @@ public class AuthServiceImpl implements IAuthService {
         map.put("idtype", validateTokenDO.getHeader().getIdtype());
         map.put("msgid", validateTokenDO.getHeader().getMsgid());
         map.put("key", freeTrafficProperties.getSourceKey());
-        map.put("apptype", validateTokenDO.getHeader().getAppType());
+        map.put("apptype", validateTokenDO.getHeader().getApptype());
         map.put("systemtime", validateTokenDO.getHeader().getSystemtime());
         map.put("token", validateTokenDO.getBody().getToken());
         return EncryptUtils.md5(map);

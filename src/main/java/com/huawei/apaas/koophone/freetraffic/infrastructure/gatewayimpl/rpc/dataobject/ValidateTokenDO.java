@@ -41,7 +41,7 @@ public class ValidateTokenDO {
          * <p>4 | pc端</p>
          * <p>5 | 手机端</p>
          */
-        private String appType;
+        private String apptype;
         /**
          * 客户端来源ip
          */
