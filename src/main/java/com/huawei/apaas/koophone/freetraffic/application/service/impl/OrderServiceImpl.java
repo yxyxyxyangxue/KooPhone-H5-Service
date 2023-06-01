@@ -64,17 +64,6 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public OrderStatusResponseDTO receiveStatus(OrderStatusRequest request) {
-        log.info("receiveStatus(). {}", request.getTelephone());
-        OrderDO req = new OrderDO();
-        req.setTelephone(request.getTelephone());
-        Optional<OrderDO> orderOpt = orderGateway.queryOrder(req);
-        return orderOpt.map(orderDO -> new OrderStatusResponseDTO(
-                    Objects.equals(orderDO.getReturnStatus(), SystemConstant.ORDER_STATUS_OK)))
-                .orElseGet(() -> new OrderStatusResponseDTO(false));
-    }
-
-    @Override
     public OrderStatusResponseDTO orderStatus(OrderStatusRequest request) {
         log.info("orderStatus(). {}", request.getTelephone());
         // 1. 先根据手机号查询，如果找到orderDO，则构造response返回

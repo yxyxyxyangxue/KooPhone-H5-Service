@@ -50,20 +50,12 @@ public class OrderController {
         return SingleResponse.of(orderService.orderStatus(orderStatusRequest));
     }
 
-    @PostMapping("/receiveStatus")
-    // @ApiOperation(value = "获取当前用户领取状态", notes = "获取当前用户领取状态")
-    @ApiIgnore
-    public SingleResponse<OrderStatusResponseDTO> receiveStatus2(
-            @RequestBody @Valid OrderStatusRequest orderReceiveStatusRequest) {
-        return SingleResponse.of(orderService.receiveStatus(orderReceiveStatusRequest));
-    }
-
     @PostMapping("/status/callback")
     @ApiOperation(value = "订购状态回调", notes = "供移动计费平台回调用的，H5前台不要调")
     public String orderStatusCallback(@RequestBody String reqXml) {
         // 1. 保存订购信息
+        log.info("reqXml = {}", reqXml);
         SyncFlowPkgOrderReq syncFlowPkgOrderReq = JAXBUtils.xml2ObjIgnoreNS(SyncFlowPkgOrderReq.class, reqXml);
-        log.info("req = {}", syncFlowPkgOrderReq);
         orderService.saveOrder(syncFlowPkgOrderReq);
         // 2. 构造response
         SyncFlowPkgOrderResp resp = new SyncFlowPkgOrderResp();

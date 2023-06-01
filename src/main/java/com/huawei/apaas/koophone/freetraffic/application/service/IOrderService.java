@@ -17,13 +17,6 @@ public interface IOrderService {
     AddOrderResponseDTO addOrder(AddOrderRequest addOrderRequest);
 
     /**
-     * 领取状态查询
-     * @param request
-     * @return
-     */
-    OrderStatusResponseDTO receiveStatus(OrderStatusRequest request);
-
-    /**
      * 订购状态查询
      * @param request
      * @return

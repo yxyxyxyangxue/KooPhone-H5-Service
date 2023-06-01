@@ -25,8 +25,8 @@ swagger:
   enabled: true
 
 cmcc:
-  rsaPrivateKeyUrl: C:\Users\zhang\Desktop\temp\encrypt\rsa
-  dsaPrivateKeyUrl: C:\Users\zhang\Desktop\temp\encrypt\dsa
+  rsaPrivateKeyUrl: /usr/local/secret/.rsa
+  dsaPrivateKeyUrl: /usr/local/secret/.dsa
   url:
     valid_token: http://120.197.235.102/api/uniTokenValidate/
     login: http://120.197.235.102/yzapi/api/login
