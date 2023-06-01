@@ -15,5 +15,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @ApiModel(value = "SignResponseDTO", description = "签名接口response dto")
 public class SignResponseDTO {
-    private String signature;
+    private byte[] signature;
 }

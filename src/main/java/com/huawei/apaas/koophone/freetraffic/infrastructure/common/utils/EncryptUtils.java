@@ -9,8 +9,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.*;
@@ -34,6 +35,11 @@ public class EncryptUtils {
     private static final String DSA_ALGORITHM = "DSA";
     private static final String CHARSET_GBK = "GBK";
 
+    /**
+     * RSA最大加密明文大小
+     */
+    private static final int MAX_ENCRYPT_BLOCK = 117;
+
     private static byte[] rsaPrivateKey = null;
     private static byte[] dsaPrivateKey = null;
     private EncryptUtils() { }
@@ -44,7 +50,7 @@ public class EncryptUtils {
      * @param key 密钥
      * @return
      */
-    public static String decodeAES(String ciphertext, String key) {
+    public static String decryptAES(String ciphertext, String key) {
         byte[] keyBytes = DigestUtils.md5(key);
         byte[] ct64Bytes = Base64.decodeBase64(ciphertext.getBytes());
         return new String(decryptAES(ct64Bytes, keyBytes));
@@ -80,6 +86,41 @@ public class EncryptUtils {
             sb.append(entry.getValue());
         }
         return sb.toString();
+    }
+
+    public static byte[] encryptRSA(byte[] originText, String privateKeyUrl) {
+        if (rsaPrivateKey == null) {
+            rsaPrivateKey = getPrivateKey(privateKeyUrl);
+        }
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            byte[] keyBytes = Base64Ext.decode(rsaPrivateKey, Base64Ext.NO_WRAP);
+
+            PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance(RSA_ALGORITHM);
+            Key privateK = keyFactory.generatePrivate(pkcs8KeySpec);
+            Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
+            cipher.init(Cipher.ENCRYPT_MODE, privateK);
+            int inputLen = originText.length;
+            int offSet = 0;
+            byte[] cache;
+            int i = 0;
+            // 对数据分段加密
+            while (inputLen - offSet > 0) {
+                if (inputLen - offSet > MAX_ENCRYPT_BLOCK) {
+                    cache = cipher.doFinal(originText, offSet, MAX_ENCRYPT_BLOCK);
+                } else {
+                    cache = cipher.doFinal(originText, offSet, inputLen - offSet);
+                }
+                out.write(cache, 0, cache.length);
+                i++;
+                offSet = i * MAX_ENCRYPT_BLOCK;
+            }
+            return out.toByteArray();
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
+                 | BadPaddingException | InvalidKeyException | InvalidKeySpecException | IOException e) {
+            log.error("encryptRSA failure. ", e);
+            throw new KooPhoneException(ErrorCode.SYSTEM_EXCEPTION);
+        }
     }
 
     public static String encodeRSA(byte[] originText, String privateKeyUrl) {
@@ -122,10 +163,10 @@ public class EncryptUtils {
             PrivateKey privateK = keyFactory.generatePrivate(pkcs8KeySpec);
             Signature dsa = Signature.getInstance(DSA_ALGORITHM);
             dsa.initSign(privateK);
-            dsa.update(params.getBytes(CHARSET_GBK));
-            return new String(Base64.decodeBase64(dsa.sign()));
+            dsa.update(params.getBytes(StandardCharsets.UTF_8));
+            return new String(java.util.Base64.getEncoder().encode(dsa.sign()));
         } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidKeySpecException
-                 | SignatureException | UnsupportedEncodingException e) {
+                 | SignatureException e) {
             log.info("encodeDSA failure. ", e);
             throw new KooPhoneException(ErrorCode.SYSTEM_EXCEPTION);
         }

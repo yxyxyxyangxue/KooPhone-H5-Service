@@ -80,7 +80,7 @@ public class AuthServiceImpl implements IAuthService {
         String resultcode = header.getResultcode();
         if (SystemConstant.VALIDATE_TOKEN_OK.equals(resultcode)) {
             ValidateTokenResponseDTO responseDTO = ValidateTokenWrapper.do2Dto(validateTokenResponseDO);
-            responseDTO.setMsisdn(EncryptUtils.decodeAES(responseDTO.getMsisdn(), freeTrafficProperties.getSourceKey()));
+            responseDTO.setMsisdn(EncryptUtils.decryptAES(responseDTO.getMsisdn(), freeTrafficProperties.getSourceKey()));
             return responseDTO;
         } else {
             log.info("Invalid Token. {}. {}", validateTokenRequest, validateTokenResponseDO);
@@ -114,7 +114,7 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public SignResponseDTO sign(SignRequest signRequest) {
-        String signature = EncryptUtils.encodeRSA(
+        byte[] signature = EncryptUtils.encryptRSA(
                 signRequest.getOriginSignature().getBytes(), freeTrafficProperties.getRsaPrivateKeyUrl());
         return new SignResponseDTO(signature);
     }
