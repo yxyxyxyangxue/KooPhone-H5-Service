@@ -46,8 +46,7 @@ public class OrderServiceImpl implements IOrderService {
     public AddOrderResponseDTO addOrder(AddOrderRequest addOrderRequest) {
         // 1. 构造请求DO
         AddOrderDO addOrderDO = AddOrderWrapper.request2Do(addOrderRequest);
-        String sourceOrderNo = UuidUtils.genUuid();
-        addOrderDO.setSourceOrderNo(sourceOrderNo);
+        addOrderDO.setSourceOrderNo(UuidUtils.genUuid());
         addOrderDO.setActivityId(freeTrafficProperties.getActivityId());
         addOrderDO.setSourceApp(freeTrafficProperties.getSourceApp());
         addOrderDO.setSourceGoodsId(freeTrafficProperties.getSourceGoodsId());

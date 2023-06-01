@@ -71,12 +71,6 @@ public class CMCCAuthMapper {
      * @return
      */
     public GetUserinfoResponseDO getUserinfo(GetUserinfoDO getUserinfoDO) {
-        try {
-            Object forObject = restTemplate.getForObject(getUserInfoUrl, Object.class, BeanUtils.beanToMap(getUserinfoDO));
-            log.warn("result = {}", forObject);
-        } catch (Exception e) {
-            log.error("出错了", e);
-        }
         ResponseEntity<GetUserinfoResponseDO> response = restTemplate.getForEntity(
                 getUserInfoUrl, GetUserinfoResponseDO.class, BeanUtils.beanToMap(getUserinfoDO));
         handlerFailure(response, getUserinfoDO);

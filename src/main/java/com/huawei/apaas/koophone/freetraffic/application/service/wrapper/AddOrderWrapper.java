@@ -14,7 +14,9 @@ public class AddOrderWrapper {
     private AddOrderWrapper() { }
 
     public static AddOrderDO request2Do(AddOrderRequest addOrderRequest) {
-        return new AddOrderDO();
+        AddOrderDO addOrderDO = new AddOrderDO();
+        addOrderDO.setTelephone(addOrderDO.getTelephone());
+        return addOrderDO;
     }
 
     public static AddOrderResponseDTO do2Dto(AddOrderResponseDO addOrderResponseDO) {

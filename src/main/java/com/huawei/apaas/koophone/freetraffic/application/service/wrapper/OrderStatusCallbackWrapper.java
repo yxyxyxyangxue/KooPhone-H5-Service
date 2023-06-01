@@ -13,6 +13,7 @@ public class OrderStatusCallbackWrapper {
         orderDO.setChannelSeqId(req.getChannelSeqId());
         orderDO.setPrice(req.getPrice());
         orderDO.setActionTime(req.getActionTime());
+        orderDO.setActionId(req.getActionID());
         orderDO.setEffectiveTime(req.getEffectiveTime());
         orderDO.setExpireTime(req.getExpireTime());
         orderDO.setEffectiveRealTime(req.getEffectiveRealTime());
