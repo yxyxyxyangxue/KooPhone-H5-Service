@@ -30,70 +30,113 @@ public class OrderDO {
     @Column(name = "telephone")
     private String telephone;
     /**
-     * 来源订单ID
+     * 用户伪码
      */
-    @Column(name = "source_order_no")
-    private String sourceOrderNo;
+    @Column(name = "user_pseudo_code")
+    private String userPseudoCode;
     /**
      * 订单号
      */
-    @Column(name = "order_no")
-    private Long orderNo;
+    @Column(name = "order_id")
+    private String orderId;
 
     /**
-     * 活动ID
+     * 外部交易ID
      */
-    @Column(name = "activity_id")
-    private Long activityId;
+    @Column(name = "channel_seq_id")
+    private String channelSeqId;
 
     /**
-     * 履约次数
+     * 资费（单位-分）
      */
-    @Column(name = "idx")
-    private Integer index;
+    @Column(name = "price")
+    private Integer price;
 
     /**
-     * 商品编码
+     * 操作时间
      */
-    @Column(name = "sku_code")
-    private String skuCode;
+    @Column(name = "action_time")
+    private String actionTime;
 
     /**
-     * 商品名称
+     * 1-订购，2-退订，3-暂停，4-激活
      */
-    @Column(name = "sku_name")
-    private String skuName;
+    @Column(name = "action_id")
+    private Integer actionId;
 
     /**
-     * 订单状态
-     * <li>50-成功</li>
-     * <li>60-失败</li>
+     * 生效时间
      */
-    @Column(name = "status")
-    private Integer status;
+    @Column(name = "effective_time")
+    private String effectiveTime;
 
     /**
-     * 业务码
+     * 失效时间
      */
-    @Column(name = "biz_code")
-    private String bizCode;
+    @Column(name = "expire_time")
+    private String expireTime;
 
     /**
-     * 业务码描述
+     * 生效时间
      */
-    @Column(name = "biz_desc")
-    private String bizDesc;
+    @Column(name = "effective_real_time")
+    private String effectiveRealTime;
 
     /**
-     * 期望执行时间
+     * 失效时间
      */
-    @Column(name = "expected_execute_time")
-    private LocalDateTime exceptedExecuteTime;
+    @Column(name = "expire_real_time")
+    private String expireRealTime;
+
     /**
-     * 实际执行时间
+     * 计费类型
+     * <li>1-自动续费</li>
+     * <li>2-到期关闭</li>
      */
-    @Column(name = "actual_execute_time")
-    private LocalDateTime actualExecuteTime;
+    @Column(name = "pay_type")
+    private Integer payType;
+
+    /**
+     * 渠道合作方编码
+     */
+    @Column(name = "channel_id")
+    private String channelId;
+
+    /**
+     * 产品编码
+     */
+    @Column(name = "product_id")
+    private String productId;
+
+    /**
+     * 订购类型，0-测试，1-正式
+     */
+    @Column(name = "order_type")
+    private Integer orderType;
+
+    /**
+     * 订购结果状态值，0-成功，1-失败
+     */
+    @Column(name = "return_status")
+    private Integer returnStatus;
+
+    /**
+     * 省编码
+     */
+    @Column(name = "prov_code")
+    private String provCode;
+
+    /**
+     * 用户发起的订购时间
+     */
+    @Column(name = "order_time")
+    private String orderTime;
+
+    /**
+     * 应用id
+     */
+    @Column(name = "app_id")
+    private String appId;
 
     @CreatedDate
     @Column(name = "create_time", updatable = false, nullable = false)

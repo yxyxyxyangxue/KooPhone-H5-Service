@@ -28,4 +28,11 @@ public interface AuthGateway {
      * @return
      */
     SendSmsCodeResponseDO sendSmsCode(SendSmsCodeDO sendSmsCodeDO);
+
+    /**
+     * 根据用户手机号查询伪码
+     * @param getUserinfoDO
+     * @return
+     */
+    GetUserinfoResponseDO getUserinfo(GetUserinfoDO getUserinfoDO);
 }

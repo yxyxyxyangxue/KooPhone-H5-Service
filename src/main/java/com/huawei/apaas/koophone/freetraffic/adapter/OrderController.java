@@ -2,6 +2,8 @@ package com.huawei.apaas.koophone.freetraffic.adapter;
 
 import com.huawei.apaas.koophone.freetraffic.application.dto.*;
 import com.huawei.apaas.koophone.freetraffic.application.service.IOrderService;
+import com.huawei.apaas.koophone.freetraffic.infrastructure.common.SystemConstant;
+import com.huawei.apaas.koophone.freetraffic.infrastructure.common.utils.JAXBUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
@@ -27,16 +30,6 @@ public class OrderController {
     private final IOrderService orderService;
 
     /**
-     * 履约结果查询
-     * @return
-     */
-    @PostMapping("/query")
-    @ApiOperation(value = "查询履约结果", notes = "是否领取免流成功，仅支持查询最近一次履约结果？")
-    public SingleResponse<QueryOrderResponseDTO> queryOrderResult(@RequestBody QueryOrderResultRequest queryOrderResultRequest) {
-        return SingleResponse.of(orderService.queryOrderResult(queryOrderResultRequest));
-    }
-
-    /**
      * 下单
      * @return
      */
@@ -47,25 +40,36 @@ public class OrderController {
     }
 
     /**
-     * 结果回调推送
+     * 获取当前用户订购状态
      * @return
      */
-    @PostMapping("/add/resultCallback")
-    @ApiOperation(value = "下单结果回调", notes = "供移动营销平台回调用的，H5前台不要调")
-    public OrderResultCallbackResponse resultCallback(
-            @RequestBody @Valid OrderResultCallbackRequest orderResultCallbackRequest) {
-        orderService.addOrderCallback(orderResultCallbackRequest);
-        return OrderResultCallbackResponse.ofOk();
+    @PostMapping("/status")
+    @ApiOperation(value = "获取当前用户订购状态", notes = "获取当前用户订购状态")
+    public SingleResponse<OrderStatusResponseDTO> status(
+            @RequestBody @Valid OrderStatusRequest orderStatusRequest) {
+        return SingleResponse.of(orderService.orderStatus(orderStatusRequest));
     }
 
-    /**
-     * receiveStatus
-     * @return
-     */
     @PostMapping("/receiveStatus")
-    @ApiOperation(value = "获取当前用户领取状态", notes = "获取当前用户领取状态")
-    public SingleResponse<OrderReceiveStatusResponseDTO> receiveStatus(
-            @RequestBody @Valid OrderReceiveStatusRequest orderReceiveStatusRequest) {
+    // @ApiOperation(value = "获取当前用户领取状态", notes = "获取当前用户领取状态")
+    @ApiIgnore
+    public SingleResponse<OrderStatusResponseDTO> receiveStatus2(
+            @RequestBody @Valid OrderStatusRequest orderReceiveStatusRequest) {
         return SingleResponse.of(orderService.receiveStatus(orderReceiveStatusRequest));
+    }
+
+    @PostMapping("/status/callback")
+    @ApiOperation(value = "订购状态回调", notes = "供移动计费平台回调用的，H5前台不要调")
+    public String orderStatusCallback(@RequestBody String reqXml) {
+        // 1. 保存订购信息
+        SyncFlowPkgOrderReq syncFlowPkgOrderReq = JAXBUtils.xml2ObjIgnoreNS(SyncFlowPkgOrderReq.class, reqXml);
+        log.info("req = {}", syncFlowPkgOrderReq);
+        orderService.saveOrder(syncFlowPkgOrderReq);
+        // 2. 构造response
+        SyncFlowPkgOrderResp resp = new SyncFlowPkgOrderResp();
+        resp.setMsgType(SystemConstant.ORDER_STATUS_CALLBACK_RESP_TYPE);
+        resp.setVersion(SystemConstant.ORDER_STATUS_CALLBACK_VERSION);
+        resp.setHRet(SystemConstant.ORDER_STATUS_CALLBACK_OK);
+        return JAXBUtils.obj2xmlStringWithNS(resp);
     }
 }

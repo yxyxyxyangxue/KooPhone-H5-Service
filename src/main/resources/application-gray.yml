@@ -27,4 +27,23 @@ cmcc:
     login: https://moss.cmpassport.com/api/login
     send_sms_code: https://moss.cmpassport.com/api/sendSmsCode
     add_order: https://dev.coc.10086.cn/staging-coc/gateway/api/common/activity/order/addOrder
-    query_order_result: https://dev.coc.10086.cn/staging-coc/gateway/api/common/activity/order/fullfillmentResultQueryV2
+    get_userinfo: >-
+      http://wap.cmpassport.com/openapi/wabpGetUseInfo
+      ?channelId={channelId}
+      &msgId={msgId}
+      &userId={userId}
+      &openType={openType}
+      &message={message}
+      &expandParams={expandParams}
+      &sign={sign}
+  auth:
+    sourceId: "001326"
+    sourceKey: n3uelzFYwsvyZHcs
+    appId: "001326"
+    appKey: n3uelzFYwsvyZHcs
+    userip: 139.196.180.61
+    channelId: xxxxxx
+  order:
+    activityId: 123456789
+    sourceApp: cmicCloudPhone
+    sourceGoodsId: xxxxxx

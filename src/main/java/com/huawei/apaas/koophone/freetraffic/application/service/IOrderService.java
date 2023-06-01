@@ -8,13 +8,6 @@ import com.huawei.apaas.koophone.freetraffic.application.dto.*;
  * @since 2023-05-23
  */
 public interface IOrderService {
-    /**
-     * 查询履约结果
-     * <p>查询到结果会入库</p>
-     * @param queryOrderResultRequest
-     * @return
-     */
-    QueryOrderResponseDTO queryOrderResult(QueryOrderResultRequest queryOrderResultRequest);
 
     /**
      * 下单
@@ -24,15 +17,22 @@ public interface IOrderService {
     AddOrderResponseDTO addOrder(AddOrderRequest addOrderRequest);
 
     /**
-     * 下单结果回调接口（入库）
-     * @param orderResultCallbackRequest
-     */
-    void addOrderCallback(OrderResultCallbackRequest orderResultCallbackRequest);
-
-    /**
      * 领取状态查询
      * @param request
      * @return
      */
-    OrderReceiveStatusResponseDTO receiveStatus(OrderReceiveStatusRequest request);
+    OrderStatusResponseDTO receiveStatus(OrderStatusRequest request);
+
+    /**
+     * 订购状态查询
+     * @param request
+     * @return
+     */
+    OrderStatusResponseDTO orderStatus(OrderStatusRequest request);
+
+    /**
+     * 回调保存订购状态信息
+     * @param syncFlowPkgOrderReq
+     */
+    void saveOrder(SyncFlowPkgOrderReq syncFlowPkgOrderReq);
 }

@@ -2,6 +2,7 @@ package com.huawei.apaas.koophone.freetraffic.infrastructure.gatewayimpl.rpc;
 
 import com.huawei.apaas.koophone.freetraffic.infrastructure.common.SystemConstant;
 import com.huawei.apaas.koophone.freetraffic.infrastructure.common.exception.KooPhoneException;
+import com.huawei.apaas.koophone.freetraffic.infrastructure.common.utils.BeanUtils;
 import com.huawei.apaas.koophone.freetraffic.infrastructure.gatewayimpl.rpc.dataobject.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,8 @@ public class CMCCAuthMapper {
     private String loginUrl;
     @Value("${cmcc.url.send_sms_code}")
     private String sendSmsCodeUrl;
+    @Value("${cmcc.url.get_userinfo}")
+    private String getUserInfoUrl;
 
     /**
      * 校验token，获取手机号
@@ -59,6 +62,24 @@ public class CMCCAuthMapper {
         ResponseEntity<SendSmsCodeResponseDO> response = restTemplate.postForEntity(
                 sendSmsCodeUrl, sendSmsCodeDO, SendSmsCodeResponseDO.class);
         handlerFailure(response, sendSmsCodeDO);
+        return response.getBody();
+    }
+
+    /**
+     * 获取用户信息
+     * @param getUserinfoDO
+     * @return
+     */
+    public GetUserinfoResponseDO getUserinfo(GetUserinfoDO getUserinfoDO) {
+        try {
+            Object forObject = restTemplate.getForObject(getUserInfoUrl, Object.class, BeanUtils.beanToMap(getUserinfoDO));
+            log.warn("result = {}", forObject);
+        } catch (Exception e) {
+            log.error("出错了", e);
+        }
+        ResponseEntity<GetUserinfoResponseDO> response = restTemplate.getForEntity(
+                getUserInfoUrl, GetUserinfoResponseDO.class, BeanUtils.beanToMap(getUserinfoDO));
+        handlerFailure(response, getUserinfoDO);
         return response.getBody();
     }
 

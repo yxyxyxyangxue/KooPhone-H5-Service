@@ -5,6 +5,7 @@ import com.huawei.apaas.koophone.freetraffic.application.service.IAuthService;
 import com.huawei.apaas.koophone.freetraffic.application.service.wrapper.LoginWrapper;
 import com.huawei.apaas.koophone.freetraffic.application.service.wrapper.SendSmsCodeWrapper;
 import com.huawei.apaas.koophone.freetraffic.application.service.wrapper.ValidateTokenWrapper;
+import com.huawei.apaas.koophone.freetraffic.domain.auth.AuthDomainService;
 import com.huawei.apaas.koophone.freetraffic.domain.gateway.AuthGateway;
 import com.huawei.apaas.koophone.freetraffic.infrastructure.common.SystemConstant;
 import com.huawei.apaas.koophone.freetraffic.infrastructure.common.exception.ErrorCode;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 认证服务
@@ -33,6 +35,7 @@ import java.util.Map;
 public class AuthServiceImpl implements IAuthService {
     private final AuthGateway authGateway;
     private final FreeTrafficProperties freeTrafficProperties;
+    private final AuthDomainService authDomainService;
 
     @Override
     public LoginResponseDTO login(LoginRequest loginRequest) {
@@ -69,7 +72,7 @@ public class AuthServiceImpl implements IAuthService {
         validateTokenDO.getHeader().setUserip(freeTrafficProperties.getUserIp());
         validateTokenDO.getHeader().setSystemtime(DateUtils.now());
         validateTokenDO.getHeader().setExpandparams(SystemConstant.VALID_TOKEN_EXPANDPARAMS);
-        validateTokenDO.getHeader().setSign(buildSign(validateTokenDO));
+        validateTokenDO.getHeader().setSign(authDomainService.buildValidateTokenSign(validateTokenDO));
         // 2. 请求
         ValidateTokenResponseDO validateTokenResponseDO = authGateway.validToken(validateTokenDO);
         // 3. 组装响应DTO
@@ -77,25 +80,12 @@ public class AuthServiceImpl implements IAuthService {
         String resultcode = header.getResultcode();
         if (SystemConstant.VALIDATE_TOKEN_OK.equals(resultcode)) {
             ValidateTokenResponseDTO responseDTO = ValidateTokenWrapper.do2Dto(validateTokenResponseDO);
-            responseDTO.setMsisdn(EncryptUtils.deCodeAES(responseDTO.getMsisdn(), freeTrafficProperties.getSourceKey()));
+            responseDTO.setMsisdn(EncryptUtils.decodeAES(responseDTO.getMsisdn(), freeTrafficProperties.getSourceKey()));
             return responseDTO;
         } else {
             log.info("Invalid Token. {}. {}", validateTokenRequest, validateTokenResponseDO);
             throw new KooPhoneException(ErrorCode.VALIDATE_TOKEN_FAILURE);
         }
-    }
-
-    private String buildSign(ValidateTokenDO validateTokenDO) {
-        Map<String, String> map = new HashMap<>();
-        map.put("version", validateTokenDO.getHeader().getVersion());
-        map.put("id", freeTrafficProperties.getSourceId());
-        map.put("idtype", validateTokenDO.getHeader().getIdtype());
-        map.put("msgid", validateTokenDO.getHeader().getMsgid());
-        map.put("key", freeTrafficProperties.getSourceKey());
-        map.put("apptype", validateTokenDO.getHeader().getApptype());
-        map.put("systemtime", validateTokenDO.getHeader().getSystemtime());
-        map.put("token", validateTokenDO.getBody().getToken());
-        return EncryptUtils.md5(map);
     }
 
     @Override
@@ -124,8 +114,8 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public SignResponseDTO sign(SignRequest signRequest) {
-        // TODO 私钥在哪里
-        String signature = EncryptUtils.rsaEncode(signRequest.getOriginSignature(), null);
+        String signature = EncryptUtils.encodeRSA(
+                signRequest.getOriginSignature().getBytes(), freeTrafficProperties.getRsaPrivateKeyUrl());
         return new SignResponseDTO(signature);
     }
 }

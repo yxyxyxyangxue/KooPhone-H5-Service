@@ -1,10 +1,7 @@
 package com.huawei.apaas.koophone.freetraffic.domain.gateway;
 
 import com.huawei.apaas.koophone.freetraffic.infrastructure.gatewayimpl.jpa.dataobject.OrderDO;
-import com.huawei.apaas.koophone.freetraffic.infrastructure.gatewayimpl.rpc.dataobject.AddOrderDO;
-import com.huawei.apaas.koophone.freetraffic.infrastructure.gatewayimpl.rpc.dataobject.AddOrderResponseDO;
-import com.huawei.apaas.koophone.freetraffic.infrastructure.gatewayimpl.rpc.dataobject.QueryOrderResponseDO;
-import com.huawei.apaas.koophone.freetraffic.infrastructure.gatewayimpl.rpc.dataobject.QueryOrderResultDO;
+import com.huawei.apaas.koophone.freetraffic.infrastructure.gatewayimpl.rpc.dataobject.*;
 
 import java.util.Optional;
 
@@ -22,16 +19,16 @@ public interface OrderGateway {
     AddOrderResponseDO addOrder(AddOrderDO addOrderDO);
 
     /**
-     * 下单结果查询
-     * @param queryOrderResultDO
+     * 根据手机号查询订单
+     * @param orderDO
      * @return
      */
-    QueryOrderResponseDO queryOrderResult(QueryOrderResultDO queryOrderResultDO);
+    Optional<OrderDO> queryOrder(OrderDO orderDO);
 
     /**
-     * 根据手机号查询订单
-     * @param telephone
+     * 保存orderDO
+     * @param orderDO
      * @return
      */
-    Optional<OrderDO> queryOrderByTelephone(String telephone);
+    OrderDO save(OrderDO orderDO);
 }

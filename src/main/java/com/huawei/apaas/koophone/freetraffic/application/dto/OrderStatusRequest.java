@@ -7,13 +7,13 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 /**
- * 请求获取当前用户领取状态request
+ * 请求获取当前用户订购状态request
  * @author zhangjihong
  * @since 2023-05-27
  */
 @Data
-@ApiModel(value = "OrderReceiveStatusRequest", description = "请求获取当前用户领取状态request")
-public class OrderReceiveStatusRequest {
+@ApiModel(value = "OrderStatusRequest", description = "请求获取当前用户订购状态request")
+public class OrderStatusRequest {
     /**
      * 手机号
      */

@@ -32,4 +32,9 @@ public class AuthGatewayImpl implements AuthGateway {
     public SendSmsCodeResponseDO sendSmsCode(SendSmsCodeDO sendSmsCodeDO) {
         return cmccAuthMapper.sendSmsCode(sendSmsCodeDO);
     }
+
+    @Override
+    public GetUserinfoResponseDO getUserinfo(GetUserinfoDO getUserinfoDO) {
+        return cmccAuthMapper.getUserinfo(getUserinfoDO);
+    }
 }

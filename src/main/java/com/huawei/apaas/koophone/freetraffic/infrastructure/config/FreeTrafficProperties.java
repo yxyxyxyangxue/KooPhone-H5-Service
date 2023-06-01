@@ -23,10 +23,16 @@ public class FreeTrafficProperties {
     private String appKey;
     @Value("${cmcc.auth.userip:null}")
     private String userIp;
+    @Value("${cmcc.auth.channelId:null}")
+    private String channelId;
     @Value("${cmcc.order.activityId:0}")
     private Long activityId;
     @Value("${cmcc.order.sourceApp:null}")
     private String sourceApp;
     @Value("${cmcc.order.sourceGoodsId:null}")
     private String sourceGoodsId;
+    @Value("${cmcc.rsaPrivateKeyUrl:null}")
+    private String rsaPrivateKeyUrl;
+    @Value("${cmcc.dsaPrivateKeyUrl:null}")
+    private String dsaPrivateKeyUrl;
 }
