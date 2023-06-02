@@ -70,7 +70,7 @@ public class OrderServiceImpl implements IOrderService {
         req.setTelephone(request.getTelephone());
         Optional<OrderDO> orderOpt = orderGateway.queryOrder(req);
         if (orderOpt.isPresent()) {
-            return new OrderStatusResponseDTO(orderDomainService.judgeOrderStatus(orderOpt.get()));
+            return orderDomainService.buildResponseDTO(orderOpt.get());
         } else {
             // 2. 如果没找到，先查询用户信息，得到用户伪码，再查询
             // 2.1 构建用户信息查询req
@@ -91,13 +91,13 @@ public class OrderServiceImpl implements IOrderService {
                 OrderDO orderDO = orderOpt2.get();
                 orderDO.setTelephone(request.getTelephone());
                 orderGateway.save(orderDO);
-                return new OrderStatusResponseDTO(orderDomainService.judgeOrderStatus(orderOpt2.get()));
+                return orderDomainService.buildResponseDTO(orderDO);
             } else {
                 OrderDO orderDO = new OrderDO();
                 orderDO.setTelephone(request.getTelephone());
                 orderDO.setUserPseudoCode(userinfo.getPcId());
                 orderGateway.save(orderDO);
-                return new OrderStatusResponseDTO(false);
+                return orderDomainService.buildResponseDTO(null);
             }
         }
     }

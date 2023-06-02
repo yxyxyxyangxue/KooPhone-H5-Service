@@ -1,5 +1,6 @@
 package com.huawei.apaas.koophone.freetraffic.domain.order;
 
+import com.huawei.apaas.koophone.freetraffic.application.dto.OrderStatusResponseDTO;
 import com.huawei.apaas.koophone.freetraffic.domain.gateway.OrderGateway;
 import com.huawei.apaas.koophone.freetraffic.infrastructure.common.SystemConstant;
 import com.huawei.apaas.koophone.freetraffic.infrastructure.common.utils.DateUtils;
@@ -58,26 +59,51 @@ public class OrderDomainService {
      * @param orderDO
      * @return
      */
-    public boolean judgeOrderStatus(OrderDO orderDO) {
+    public OrderStatusResponseDTO.OrderStatus judgeOrderStatus(OrderDO orderDO) {
         log.info("judgeOrderStatus(). {}", orderDO);
         // 订购状态成功
         if (Objects.equals(orderDO.getReturnStatus(), SystemConstant.ORDER_RETURN_STATUS)) {
             // payType为2-到期关闭，无论怎么样，都需要校验expireTime
+            if (Objects.equals(orderDO.getPayType(), SystemConstant.ORDER_PAYTYPE_EXPIRE_CLOSE)) {
+                if (DateUtils.afterNow(orderDO.getExpireTime())) {
+                    return OrderStatusResponseDTO.OrderStatus.CLOSED;
+                }
+            }
             // actionId为退订，则当前时间要在失效时间之前
-            if (Objects.equals(orderDO.getPayType(), SystemConstant.ORDER_PAYTYPE_EXPIRE_CLOSE)
-                    || Objects.equals(orderDO.getActionId(), SystemConstant.ORDER_ACTION_CANCEL_ORDER)) {
-                if (DateUtils.beforeNow(getExpireTime(orderDO.getExpireTime()))) {
-                    return true;
+            if (Objects.equals(orderDO.getActionId(), SystemConstant.ORDER_ACTION_CANCEL_ORDER)) {
+                if (DateUtils.beforeNow(orderDO.getExpireTime())) {
+                    return OrderStatusResponseDTO.OrderStatus.CANCELING;
+                } else {
+                    return OrderStatusResponseDTO.OrderStatus.CANCELED;
                 }
             }
             // actionId为订购，则当前时间要在生效时间之后
             if (Objects.equals(orderDO.getActionId(), SystemConstant.ORDER_ACTION_PLACE_ORDER)) {
                 if (orderDO.getEffectiveTime() == null
                         || DateUtils.afterNow(orderDO.getEffectiveTime())) {
-                    return true;
+                    return OrderStatusResponseDTO.OrderStatus.TRUE;
+                } else {
+                    return OrderStatusResponseDTO.OrderStatus.PROCESS;
                 }
             }
         }
-        return false;
+        return OrderStatusResponseDTO.OrderStatus.FALSE;
+    }
+
+    /**
+     * 构建订单状态response
+     * @param orderDO
+     * @return
+     */
+    public OrderStatusResponseDTO buildResponseDTO(OrderDO orderDO) {
+        // 还未返回
+        if (orderDO == null) {
+            return new OrderStatusResponseDTO(OrderStatusResponseDTO.OrderStatus.PENDING, null);
+        }
+        // 到期关闭设置过期时间
+        if (Objects.equals(orderDO.getPayType(), SystemConstant.ORDER_PAYTYPE_EXPIRE_CLOSE)) {
+            orderDO.setExpireTime(getExpireTime(orderDO.getExpireTime()));
+        }
+        return new OrderStatusResponseDTO(judgeOrderStatus(orderDO), orderDO.getExpireTime());
     }
 }
