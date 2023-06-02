@@ -1,5 +1,12 @@
 package com.huawei.apaas.koophone.freetraffic.application.dto;
 
+import io.swagger.annotations.ApiModel;
+
+/**
+ * @author zhangjihong
+ * @since 2023-05-23
+ */
+@ApiModel(value = "SingleResponse", description = "但数据模型response")
 public class SingleResponse<T> extends Response{
     private T data;
 

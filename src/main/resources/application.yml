@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 80
 
 spring:
   application:
@@ -25,6 +25,8 @@ swagger:
   enabled: true
 
 cmcc:
+  rsaPrivateKeyUrl: /usr/local/secret/.rsa
+  dsaPrivateKeyUrl: /usr/local/secret/.dsa
   url:
     valid_token: http://120.197.235.102/api/uniTokenValidate/
     login: http://120.197.235.102/yzapi/api/login
@@ -40,7 +42,7 @@ cmcc:
       &expandParams={expandParams}
       &sign={sign}
   auth:
-    sourceId: "001326"
+    sourceId: "123456"
     sourceKey: n3uelzFYwsvyZHcs
     appId: "001326"
     appKey: n3uelzFYwsvyZHcs

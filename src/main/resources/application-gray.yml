@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8083
 
 spring:
   application:
@@ -21,17 +21,14 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       ddl-auto: none
 
-swagger:
-  enabled: true
-
 cmcc:
   url:
-    valid_token: http://120.197.235.102/api/uniTokenValidate/
-    login: http://120.197.235.102/yzapi/api/login
-    send_sms_code: http://120.197.235.102/yzapi/api/sendSmsCode
-    add_order: https://sandbox.open.10086.cn/38857911/gateway/api/common/activity/order/addOrder
+    valid_token: https://token.cmpassport.com:8300/uniapi/uniTokenValidate
+    login: https://moss.cmpassport.com/api/login
+    send_sms_code: https://moss.cmpassport.com/api/sendSmsCode
+    add_order: https://dev.coc.10086.cn/staging-coc/gateway/api/common/activity/order/addOrder
     get_userinfo: >-
-      http://120.197.235.102/wabp/wabpGetUseInfo
+      http://wap.cmpassport.com/openapi/wabpGetUseInfo
       ?channelId={channelId}
       &msgId={msgId}
       &userId={userId}

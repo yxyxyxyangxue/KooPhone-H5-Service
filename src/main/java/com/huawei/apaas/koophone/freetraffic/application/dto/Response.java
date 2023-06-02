@@ -1,5 +1,12 @@
 package com.huawei.apaas.koophone.freetraffic.application.dto;
 
+import io.swagger.annotations.ApiModel;
+
+/**
+ * @author zhangjihong
+ * @since 2023-05-23
+ */
+@ApiModel(value = "Response", description = "无数据 base response")
 public class Response {
     private boolean success;
 

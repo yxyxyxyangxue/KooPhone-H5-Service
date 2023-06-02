@@ -5,7 +5,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class FreeTrafficApplicationTests {
-// config.RestTemplateConfigTest
 	@Test
 	void contextLoads() {
 	}

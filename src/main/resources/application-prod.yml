@@ -1,9 +1,49 @@
 server:
-  port: 8081
+  port: 8083
 
-cmcc_url:
-  valid_token: https://token.cmpassport.com:8300/uniapi/uniTokenValidate
-  login: https://moss.cmpassport.com/api/login
-  send_sms_code: https://moss.cmpassport.com/api/sendSmsCode
-  add_order: https://dev.coc.10086.cn/coc/gateway/api/common/activity/order/addOrder
-  query_order_result: https://dev.coc.10086.cn/coc/gateway/api/common/activity/order/fullfillmentResultQueryV2
+spring:
+  application:
+    name: kp-freetraffic
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: dell-/v0Q61f0
+    url: jdbc:mysql://139.196.180.61:3306/kp_freetraffic_db?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    hikari:
+      connection-test-query: select 1
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: none
+
+cmcc:
+  url:
+    valid_token: https://token.cmpassport.com:8300/uniapi/uniTokenValidate
+    login: https://moss.cmpassport.com/api/login
+    send_sms_code: https://moss.cmpassport.com/api/sendSmsCode
+    add_order: https://dev.coc.10086.cn/coc/gateway/api/common/activity/order/addOrder
+    get_userinfo: >-
+      http://wap.cmpassport.com/openapi/wabpGetUseInfo
+      ?channelId={channelId}
+      &msgId={msgId}
+      &userId={userId}
+      &openType={openType}
+      &message={message}
+      &expandParams={expandParams}
+      &sign={sign}
+  auth:
+    sourceId: "001326"
+    sourceKey: n3uelzFYwsvyZHcs
+    appId: "001326"
+    appKey: n3uelzFYwsvyZHcs
+    userip: 139.196.180.61
+    channelId: xxxxxx
+  order:
+    activityId: 123456789
+    sourceApp: cmicCloudPhone
+    sourceGoodsId: xxxxxx
