@@ -97,7 +97,7 @@ public class OrderDomainService {
      */
     public OrderStatusResponseDTO buildResponseDTO(OrderDO orderDO) {
         // 还未返回
-        if (orderDO == null) {
+        if (orderDO == null || !StringUtils.hasText(orderDO.getOrderId())) {
             return new OrderStatusResponseDTO(OrderStatusResponseDTO.OrderStatus.PENDING, null);
         }
         // 到期关闭设置过期时间

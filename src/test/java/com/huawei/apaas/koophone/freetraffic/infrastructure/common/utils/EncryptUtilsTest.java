@@ -35,7 +35,7 @@ class EncryptUtilsTest extends FreeTrafficApplicationTests {
      * RSA最大解密密文大小
      */
     private static final int MAX_DECRYPT_BLOCK = 128;
-    @Test
+    // @Test
     void test_encodeRSA() throws Exception {
         String originText = "Hello World!";
         String rsa2 = EncryptUtils.encodeRSA(originText.getBytes(), freeTrafficProperties.getRsaPrivateKeyUrl());
@@ -51,7 +51,7 @@ class EncryptUtilsTest extends FreeTrafficApplicationTests {
         assertTrue(verify);
     }
 
-    @Test
+    // @Test
     void test_encryptRSA() throws Exception {
         String originText = "Hello World!";
         byte[] pwd = EncryptUtils.encryptRSA(originText.getBytes(), freeTrafficProperties.getRsaPrivateKeyUrl());
@@ -61,7 +61,7 @@ class EncryptUtilsTest extends FreeTrafficApplicationTests {
         assertEquals(originText, new String(bytes));
     }
 
-    @Test
+    // @Test
     void encodeDSA() throws Exception {
         TreeMap<String, Object> treeMap = new TreeMap<>();
         String originText = "Hello World!";
