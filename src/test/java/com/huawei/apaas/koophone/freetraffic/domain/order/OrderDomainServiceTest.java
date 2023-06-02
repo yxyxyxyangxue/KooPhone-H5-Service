@@ -1,6 +1,7 @@
 package com.huawei.apaas.koophone.freetraffic.domain.order;
 
 import com.huawei.apaas.koophone.freetraffic.FreeTrafficApplicationTests;
+import com.huawei.apaas.koophone.freetraffic.application.dto.OrderStatusResponseDTO;
 import com.huawei.apaas.koophone.freetraffic.application.dto.SyncFlowPkgOrderReq;
 import com.huawei.apaas.koophone.freetraffic.application.service.wrapper.OrderStatusCallbackWrapper;
 import com.huawei.apaas.koophone.freetraffic.infrastructure.common.utils.JAXBUtils;
@@ -41,7 +42,7 @@ class OrderDomainServiceTest extends FreeTrafficApplicationTests {
                 "</SyncFlowPkgOrderReq>";
         SyncFlowPkgOrderReq req = JAXBUtils.xml2ObjIgnoreNS(SyncFlowPkgOrderReq.class, xml);
         OrderDO orderDO = OrderStatusCallbackWrapper.request2DO(req);
-        boolean b = domainService.judgeOrderStatus(orderDO);
-        assertTrue(b);
+        OrderStatusResponseDTO.OrderStatus orderStatus = domainService.judgeOrderStatus(orderDO);
+        assertEquals(orderStatus, OrderStatusResponseDTO.OrderStatus.TRUE);
     }
 }
